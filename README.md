@@ -50,9 +50,9 @@ export PATH=\$PATH:/usr/local/node-v10.22.0-linux-x64/bin:/usr/local/bin
 go 1.12  
 v10.22.0  
 
-
-cd $GOPATH/src/github.com/  
-mv secisland grafana  
+mkdir -p `$GOPATH/src/github.com/grafana/`  
+cd `$GOPATH/src/github.com/grafana/`  
+git clone `https://github.com/secisland/grafan`  
 cd grafana  
 
 go run build.go setup  
