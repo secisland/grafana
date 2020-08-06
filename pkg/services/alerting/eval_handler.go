@@ -118,16 +118,20 @@ func (e *DefaultEvalHandler) Eval(context *EvalContext) {
 
 	if firing {
 		fmt.Println("*************** alerting:")
+		context.log.Info("*************** alerting:")
 		for _,v := range tmpEvalMatchMetric{
 			fmt.Println("*************** Metric1:",v)
+			context.log.Info(fmt.Sprintf("*************** Metric1: %s",v))
 		}
 
 		for _,v := range tmpEvalMatches{
 			context.EvalMatches = append(context.EvalMatches,v)
 			fmt.Println("*************** EvalMatcheMetric2:",v.Metric)
+			context.log.Info(fmt.Sprintf("*************** EvalMatcheMetric2: %s",v.Metric))
 		}
 	} else {
 		fmt.Println("*************** No alerting")
+		context.log.Info("*************** No alerting")
 	}
 	
 	context.ConditionEvals = conditionEvals + " = " + strconv.FormatBool(firing)
