@@ -96,6 +96,7 @@ func (e *AlertEngine) runJobDispatcher(grafanaCtx context.Context) error {
 		case <-grafanaCtx.Done():
 			return dispatcherGroup.Wait()
 		case job := <-e.execQueue:
+			//fmt.Println("###############################job:",job.Rule)
 			dispatcherGroup.Go(func() error { return e.processJobWithRetry(alertCtx, job) })
 		}
 	}
@@ -179,6 +180,15 @@ func (e *AlertEngine) processJob(attemptID int, attemptChan chan int, cancelChan
 		}()
 
 		e.evalHandler.Eval(evalContext)
+
+		//fmt.Println("####",evalContext)
+		//for _,v := range job.Rule.Conditions {
+		//	fmt.Println("####==",v)
+		//}
+		//fmt.Println("####1",evalContext.ConditionEvals)
+		//fmt.Println("####1",evalContext.Rule)
+		//fmt.Println("####1",evalContext.EvalMatches)
+		//fmt.Println("####1",evalContext.Logs)
 
 		span.SetTag("alertId", evalContext.Rule.ID)
 		span.SetTag("dashboardId", evalContext.Rule.DashboardID)

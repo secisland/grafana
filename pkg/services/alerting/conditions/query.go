@@ -58,6 +58,9 @@ func (c *QueryCondition) Eval(context *alerting.EvalContext) (*alerting.Conditio
 		reducedValue := c.Reducer.Reduce(series)
 		evalMatch := c.Evaluator.Eval(reducedValue)
 
+		//fmt.Println("@@@@@@@@@@@@@@ reducedValue:",reducedValue)
+       		//fmt.Println("@@@@@@@@@@@@@@ reducedValue:",evalMatch)
+
 		if !reducedValue.Valid {
 			emptySerieCount++
 		}

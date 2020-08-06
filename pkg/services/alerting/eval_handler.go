@@ -1,6 +1,7 @@
 package alerting
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -23,11 +24,33 @@ func NewEvalHandler() *DefaultEvalHandler {
 	}
 }
 
+func IsExistInSlice(value string,Arr []string)bool{
+    for _,v := range Arr {
+        if v == value {
+            return true
+        }
+    }
+    return false
+}
+
+func IntersectSlice(arr1 []string,arr2 []string) (res []string){
+    for _,v1 := range arr1 {
+        for _,v2 := range arr2 {
+            if v1 == v2 {
+                res = append(res,v1)
+            }
+        }
+    }
+    return
+}
+
 // Eval evaluated the alert rule.
 func (e *DefaultEvalHandler) Eval(context *EvalContext) {
 	firing := true
 	noDataFound := true
 	conditionEvals := ""
+	tmpEvalMatchMetric := []string{}
+	tmpEvalMatches := []*EvalMatch{}
 
 	for i := 0; i < len(context.Rule.Conditions); i++ {
 		condition := context.Rule.Conditions[i]
@@ -41,9 +64,25 @@ func (e *DefaultEvalHandler) Eval(context *EvalContext) {
 			break
 		}
 
+		//fmt.Println("###############condition:",condition)
+		//fmt.Println("###############ConditionResult:",cr)
+		//for _,v := range cr.EvalMatches {
+		//	fmt.Println("###############222ConditionResult-EvalMatch:",v)
+		//	fmt.Println("###############222ConditionResult-EvalMatch.Metric:",v.Metric)
+		//}
+
 		if i == 0 {
 			firing = cr.Firing
 			noDataFound = cr.NoDataFound
+			for _,v := range cr.EvalMatches {
+				tmpEvalMatchMetric = append(tmpEvalMatchMetric,v.Metric)
+			}
+		} else {
+			tmpEvalMatchMetric2 := []string{}
+			for _,v := range cr.EvalMatches {
+				tmpEvalMatchMetric2 = append(tmpEvalMatchMetric2,v.Metric)
+			}
+			tmpEvalMatchMetric = IntersectSlice(tmpEvalMatchMetric,tmpEvalMatchMetric2)
 		}
 
 		// calculating Firing based on operator
@@ -52,6 +91,9 @@ func (e *DefaultEvalHandler) Eval(context *EvalContext) {
 			noDataFound = noDataFound || cr.NoDataFound
 		} else {
 			firing = firing && cr.Firing
+			if len(tmpEvalMatchMetric) ==0 {
+				firing = false
+			}
 			noDataFound = noDataFound && cr.NoDataFound
 		}
 
@@ -61,9 +103,33 @@ func (e *DefaultEvalHandler) Eval(context *EvalContext) {
 			conditionEvals = strconv.FormatBool(firing)
 		}
 
-		context.EvalMatches = append(context.EvalMatches, cr.EvalMatches...)
+		if firing {
+			tmpEvalMatches = []*EvalMatch{}
+			for _,v := range cr.EvalMatches {
+				if IsExistInSlice(v.Metric,tmpEvalMatchMetric) {
+					tmpEvalMatches = append(tmpEvalMatches,v)
+					//fmt.Println("$$$$$$$$$$$$$$$$$$$:",v.Metric)
+				}
+			}
+		} else {
+			context.EvalMatches = append(context.EvalMatches, cr.EvalMatches...)
+		}
 	}
 
+	if firing {
+		fmt.Println("*************** alerting:")
+		for _,v := range tmpEvalMatchMetric{
+			fmt.Println("*************** Metric1:",v)
+		}
+
+		for _,v := range tmpEvalMatches{
+			context.EvalMatches = append(context.EvalMatches,v)
+			fmt.Println("*************** EvalMatcheMetric2:",v.Metric)
+		}
+	} else {
+		fmt.Println("*************** No alerting")
+	}
+	
 	context.ConditionEvals = conditionEvals + " = " + strconv.FormatBool(firing)
 	context.Firing = firing
 	context.NoDataFound = noDataFound
