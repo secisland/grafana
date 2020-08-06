@@ -43,7 +43,7 @@ go run build.go build
 npm install -g yarn --registry=http://registry.npm.taobao.org
 yarn install --pure-lockfile --registry=http://registry.npm.taobao.org
 npm install -g grunt-cli --registry=http://registry.npm.taobao.org
-# grunt
+// grunt
 yarn start #, yarn start:hot, or yarn build
 
 
