@@ -6,7 +6,7 @@
 
 1、查询所有告警  
 
-curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@http://192.168.56.102:3000/api/alerts`  
+curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@192.168.56.102:3000/api/alerts`  
 
 or  
 
@@ -15,12 +15,12 @@ curl -H "Authorization: Bearer eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR
 
 2、查具体某个仪表盘的告警  
 
-curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@http://192.168.56.102:3000/api/alerts?dashboardId=93`  
+curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@192.168.56.102:3000/api/alerts?dashboardId=93`  
 
 
 3、查具体某个图形的告警  
 
-curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@http://192.168.56.102:3000/api/alerts?dashboardId=93&panelId=7`  
+curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@192.168.56.102:3000/api/alerts?dashboardId=93&panelId=7`  
 
 
 
