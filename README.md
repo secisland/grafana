@@ -12,6 +12,14 @@ or
 
 curl -H "Authorization: Bearer eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9" `http://192.168.56.102:3000/api/alerts`  
 
+HTTP Request Header(Authorization)方式:  
+GET /api/alerts HTTP/1.1  
+Accept: application/json  
+Content-Type: application/json  
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk  
+
+参考：https://grafana.com/docs/grafana/latest/http_api/auth/  
+  
 
 2、查具体某个仪表盘的告警  
 
@@ -21,7 +29,6 @@ curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjo
 3、查具体某个图形的告警  
 
 curl `http://api_key:eyJrIjoiUnFpS3k3MzNlcG52ZWJmbjFrZlNpMElaS3BFZTFVR3oiLCJuIjoieXNmIiwiaWQiOjF9@192.168.56.102:3000/api/alerts?dashboardId=93&panelId=7`  
-
 
 
 二、go和node环境准备  
