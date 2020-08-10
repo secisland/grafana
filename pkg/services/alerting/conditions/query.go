@@ -58,6 +58,7 @@ func (c *QueryCondition) Eval(context *alerting.EvalContext) (*alerting.Conditio
 		reducedValue := c.Reducer.Reduce(series)
 		evalMatch := c.Evaluator.Eval(reducedValue)
 
+		//fmt.Println("@@@@@@@@@@@@@@ Metric:",series.Name)
 		//fmt.Println("@@@@@@@@@@@@@@ reducedValue:",reducedValue)
        		//fmt.Println("@@@@@@@@@@@@@@ reducedValue:",evalMatch)
 

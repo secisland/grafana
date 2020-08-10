@@ -122,32 +122,62 @@ func newSimpleReducer(t string) *queryReducer {
 }
 
 func calculateDiff(series *tsdb.TimeSeries, allNull bool, value float64, fn func(float64, float64) float64) (bool, float64) {
-	var (
-		points = series.Points
-		first  float64
-		i      int
-	)
-	// get the newest point
-	for i = len(points) - 1; i >= 0; i-- {
-		if points[i][0].Valid {
-			allNull = false
-			first = points[i][0].Float64
-			break
-		}
-	}
-	if i >= 1 {
-		// get the oldest point
-		points = points[0:i]
-		for i := 0; i < len(points); i++ {
-			if points[i][0].Valid {
-				allNull = false
-				val := fn(first, points[i][0].Float64)
-				value = math.Abs(val)
-				break
-			}
-		}
-	}
-	return allNull, value
+    var (
+        points = series.Points
+        newest  float64
+        oldest float64
+        count =  0
+        i      int
+    )
+    // get the newest point
+    for i = len(points) - 1; i >= 0; i-- {
+        if points[i][0].Valid {
+            allNull = false
+            //fmt.Println("########### Break1 newest=",points[i][0].Float64," length=",len(points), " count=",count," i=",i)
+            if count == 0 {
+                newest = points[i][0].Float64
+                count = count + 1
+                if len(points) < 4 {
+                    //fmt.Println("########### break11 newest=",newest," length=",len(points), " count=",count," i=",i,points[i])
+                    break
+                }
+            } else {
+                newest = (points[i][0].Float64 + newest)/2
+                //fmt.Println("########### break111 newest=",newest," length=",len(points), " count=",count," i=",i)
+                break
+            }
+        }
+    }
+
+    count = 0
+
+    if i >= 1 {
+        // get the oldest point
+        points = points[0:i]
+        for i := 0; i < len(points); i++ {
+            if points[i][0].Valid {
+                allNull = false
+                //fmt.Println("########### Break2 newest=",newest," oldest=",points[i][0].Float64," length=",len(points), " count=",count," i=",i)
+                if count == 0 {
+                    oldest = points[i][0].Float64
+                    count = count + 1
+                    if len(points) < 2 {
+                        //fmt.Println("########### break22 newest=",newest," oldest=",oldest," length=",len(points), " count=",count," i=",i)
+                        break
+                    }
+                } else {
+                    oldest = (oldest + points[i][0].Float64)/2
+                    //fmt.Println("########### break222 newest=",newest," oldest=",oldest," length=",len(points), " count=",count," i=",i)
+                    break
+                }
+            }
+        }
+        val := fn(newest, oldest)
+        value = math.Abs(val)
+        //fmt.Println("*************** Diff1=",value," newest=",newest," oldest=",oldest," length=",len(points), " count=",count," i=",i)
+    }
+    //fmt.Println("***************  Diff2=",value," newest=",newest," oldest=",oldest," length=",len(points), " count=",count," i=",i)
+    return allNull, value
 }
 
 var diff = func(newest, oldest float64) float64 {
